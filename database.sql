@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict UaZZGcIo7rYTQfyuoWRqdZin5Ja0qjnQulsAIYiOWHUnXGpTtcaxdAGwbekvmto
+\restrict oxsfhkST0rrxWu4gL5fNOux3W5C9YdJprwz5n1k06SsWybwKnVwVp3TNoSXiyEd
 
 -- Dumped from database version 15.15 (Debian 15.15-1.pgdg13+1)
 -- Dumped by pg_dump version 15.15 (Debian 15.15-1.pgdg13+1)
@@ -247,6 +247,7 @@ COPY public.societies (id, name, type, contact_email, created_at, updated_at) FR
 COPY public.tickets (id, title, description, product, category, department, priority, urgency, status, created_by, society_id, assigned_agent_id, created_at, updated_at) FROM stdin;
 2	test	hello 	Fortinet	test	info	High	Medium	OPEN	5	6	\N	2026-02-16 12:17:00.966489	2026-02-16 12:17:00.966489
 1	bdj	hebdhjb	Cisco	hjdbw	wdbhj	Low	Low	IN_PROGRESS	1	\N	1	2026-02-14 22:06:37.333121	2026-02-16 14:20:17.949584
+3	Internet Not Working	My home fiber connection has been down since yesterday evening around 8 PM.\nThe router shows a red LOS light and I have no internet access.\nI tried restarting the router multiple times but it didn’t fix the issue.\nPlease check if there is an outage in my area or if a technician needs to visit.\n\nCustomer ID: 4567821\nPhone: 05XXXXXXXX	Cisco	Internet / Fiber	/	High	High	OPEN	8	7	\N	2026-02-16 16:41:56.030648	2026-02-16 16:41:56.030648
 \.
 
 
@@ -281,7 +282,7 @@ SELECT pg_catalog.setval('public.societies_id_seq', 10, true);
 -- Name: tickets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.tickets_id_seq', 2, true);
+SELECT pg_catalog.setval('public.tickets_id_seq', 3, true);
 
 
 --
@@ -383,5 +384,5 @@ ALTER TABLE ONLY public.users
 -- PostgreSQL database dump complete
 --
 
-\unrestrict UaZZGcIo7rYTQfyuoWRqdZin5Ja0qjnQulsAIYiOWHUnXGpTtcaxdAGwbekvmto
+\unrestrict oxsfhkST0rrxWu4gL5fNOux3W5C9YdJprwz5n1k06SsWybwKnVwVp3TNoSXiyEd
 
