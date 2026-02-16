@@ -1,0 +1,99 @@
+.layout {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-link {
+  color: white;
+  text-decoration: none;
+  padding: 10px 0;
+  display: block;
+}
+
+.sidebar-link:hover {
+  text-decoration: underline;
+}
+
+.main-content {
+  margin-left: 250px; /* Adjusted to account for the fixed sidebar width */
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
+  width: calc(100% - 250px); /* Ensures the main content takes the remaining width */
+}
+
+.topbar {
+  background-color: #f4f4f4;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  font-family: Arial, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.topbar .topbar-left h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.topbar .topbar-right .logout-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.topbar .topbar-right .logout-button:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
+}
+
+.page-content {
+  padding: 20px;
+  background-color: #ecf0f1;
+  flex: 1;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .main-content {
+    flex: none;
+  }
+}

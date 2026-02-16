@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: ticket-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres:15
+    container_name: ticketing-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ticketing
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend          # build from your Dockerfile
+    container_name: ticketing-backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app        # sync local code to container
+      - /app/node_modules     # keep container-installed node_modules safe
+    command: sh -c "npm install && npm start"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+volumes:
+  db-data:
