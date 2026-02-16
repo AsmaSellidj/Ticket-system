@@ -136,5 +136,4 @@ VALUES (
 - Serve the Vite build output (`npm run build`) through your static host and point it to the hosted API.
 - Secure all secrets (database passwords, bcrypt salt rounds) via your platform’s configuration management.
 
-## License
-This project currently has no explicit license. Add one before distributing the repository publicly.
+
