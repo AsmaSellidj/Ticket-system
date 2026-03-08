@@ -22,7 +22,7 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
---
+
 -- Name: comments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -379,6 +379,50 @@ ALTER TABLE ONLY public.comments
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_society_id_fkey FOREIGN KEY (society_id) REFERENCES public.societies(id) ON DELETE SET NULL;
 
+
+-- 1. Add missing updated_at columns
+ALTER TABLE public.users ADD COLUMN updated_at timestamp without time zone DEFAULT now();
+ALTER TABLE public.comments ADD COLUMN updated_at timestamp without time zone DEFAULT now();
+
+-- 2. Add deleted_at columns for Soft Deletes
+ALTER TABLE public.societies ADD COLUMN deleted_at timestamp without time zone;
+ALTER TABLE public.users ADD COLUMN deleted_at timestamp without time zone;
+ALTER TABLE public.tickets ADD COLUMN deleted_at timestamp without time zone;
+ALTER TABLE public.comments ADD COLUMN deleted_at timestamp without time zone;
+
+-- 3. Convert VARCHAR columns to strictly use defined ENUMs
+ALTER TABLE public.users ALTER COLUMN role TYPE user_role USING role::user_role;
+ALTER TABLE public.tickets ALTER COLUMN status TYPE ticket_status USING status::ticket_status;
+-- Notice we use UPPER() here because existing data has "High" but the ENUM expects "HIGH"
+ALTER TABLE public.tickets ALTER COLUMN priority TYPE ticket_priority USING UPPER(priority)::ticket_priority;
+
+-- 4. Create the Attachments Table
+CREATE TABLE public.attachments (
+    id SERIAL PRIMARY KEY,
+    ticket_id INTEGER REFERENCES public.tickets(id) ON DELETE CASCADE,
+    comment_id INTEGER REFERENCES public.comments(id) ON DELETE CASCADE,
+    uploaded_by INTEGER NOT NULL REFERENCES public.users(id),
+    file_name TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    file_size INTEGER NOT NULL,
+    content_type TEXT NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    deleted_at timestamp without time zone
+);
+
+-- 5. Attach the updated_at Triggers (Your dump had the function, but no triggers)
+CREATE TRIGGER update_societies_modtime BEFORE UPDATE ON public.societies FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+CREATE TRIGGER update_users_modtime BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+CREATE TRIGGER update_tickets_modtime BEFORE UPDATE ON public.tickets FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+CREATE TRIGGER update_comments_modtime BEFORE UPDATE ON public.comments FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
+-- 6. Add Indexes for Performance
+CREATE INDEX idx_users_society_id ON public.users(society_id);
+CREATE INDEX idx_tickets_created_by ON public.tickets(created_by);
+CREATE INDEX idx_tickets_assigned_agent ON public.tickets(assigned_agent_id);
+CREATE INDEX idx_tickets_society_id ON public.tickets(society_id);
+CREATE INDEX idx_comments_ticket_id ON public.comments(ticket_id);
+CREATE INDEX idx_attachments_ticket_id ON public.attachments(ticket_id);
 
 --
 -- PostgreSQL database dump complete
