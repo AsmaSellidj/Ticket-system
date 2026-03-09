@@ -373,27 +373,50 @@ function TicketDetails() {
           </section>
         )}
 
-        {/* NEW: Attachments Display Section */}
+        {/* Attachments Display Section */}
         {attachments.length > 0 && (
-          <section className="ticket-description-card">
+          <section className="attachments-card">
             <h2>Attachments</h2>
-            <ul style={{ listStyleType: "none", padding: 0 }}>
-              {attachments.map((file) => (
-                <li key={file.id} style={{ marginBottom: "8px" }}>
-                  📄 <a 
-                      href={`http://localhost:5000${file.file_path}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      style={{ color: "#0056b3", textDecoration: "none", fontWeight: "bold" }}
+            <div className="attachments-grid">
+              {attachments.map((file) => {
+                const isImage = file.content_type?.startsWith('image/');
+                const fileUrl = `http://localhost:5000${file.file_path}`;
+                return (
+                  <div key={file.id} className="attachment-item">
+                    {isImage ? (
+                      <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="attachment-preview">
+                        <img src={fileUrl} alt={file.file_name} />
+                      </a>
+                    ) : (
+                      <div className="attachment-icon">
+                        📄
+                      </div>
+                    )}
+                    <div className="attachment-info">
+                      <a 
+                        href={fileUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="attachment-name"
+                      >
+                        {file.file_name}
+                      </a>
+                      <span className="attachment-size">
+                        {Math.round(file.file_size / 1024)} KB
+                      </span>
+                    </div>
+                    <a 
+                      href={fileUrl} 
+                      download={file.file_name}
+                      className="attachment-download"
+                      title="Download"
                     >
-                      {file.file_name}
-                    </a> 
-                    <span style={{ fontSize: "0.85em", color: "#666", marginLeft: "10px" }}>
-                      ({Math.round(file.file_size / 1024)} KB)
-                    </span>
-                </li>
-              ))}
-            </ul>
+                      ⬇
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
           </section>
         )}
 
@@ -429,16 +452,33 @@ function TicketDetails() {
                 placeholder="Add a reply..."
                 disabled={commentSubmitting}
               />
-              <div className="comment-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
-                <div className="toolbar-buttons" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  {/* NEW: File input replacing the ghost 'Attach' button */}
-                  <input 
-                    type="file" 
-                    ref={fileInputRef}
-                    onChange={(e) => setSelectedFile(e.target.files[0])}
-                    disabled={commentSubmitting}
-                    style={{ fontSize: '0.9em' }}
-                  />
+              <div className="comment-toolbar">
+                <div className="toolbar-buttons">
+                  <label className="file-upload-btn">
+                    <input 
+                      type="file" 
+                      ref={fileInputRef}
+                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                      disabled={commentSubmitting}
+                      className="file-input-hidden"
+                    />
+                    📎 Attach File
+                  </label>
+                  {selectedFile && (
+                    <div className="selected-file-badge">
+                      <span className="selected-file-name">{selectedFile.name}</span>
+                      <button 
+                        type="button" 
+                        className="remove-file-btn"
+                        onClick={() => {
+                          setSelectedFile(null);
+                          if (fileInputRef.current) fileInputRef.current.value = '';
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="toolbar-actions">
                   <button type="submit" className="primary-button" disabled={commentSubmitting || (!newComment.trim() && !selectedFile)}>
