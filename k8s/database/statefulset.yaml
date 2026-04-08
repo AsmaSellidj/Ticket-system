@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: postgres
   namespace: ticketing
+
 spec:
   serviceName: postgres
   replicas: 1
@@ -24,12 +25,6 @@ spec:
                 name: ticket-config
             - secretRef:
                 name: db-secret
-          env:
-            - name: POSTGRES_DB
-              valueFrom:
-                configMapKeyRef:
-                  name: ticket-config
-                  key: DB_NAME
           volumeMounts:
             - name: pg-data
               mountPath: /var/lib/postgresql/data
